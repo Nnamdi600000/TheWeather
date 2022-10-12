@@ -26,15 +26,16 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="4dp"
+                android:contentDescription="@string/location"
                 android:scaleType="centerCrop"
-                android:src="@drawable/location_img"
-                android:contentDescription="@string/location" />
+                android:src="@drawable/location_img" />
 
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:fontFamily="sans-serif-medium"
                 android:padding="2dp"
                 android:textColor="@color/white"
                 android:textSize="15sp"
@@ -46,6 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:fontFamily="sans-serif-medium"
                 android:padding="2dp"
                 android:textColor="@color/white"
                 android:textSize="15sp"
@@ -58,12 +60,12 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginBottom="50dp"
+            android:contentDescription="@string/weather_condition_symbol"
             android:scaleType="centerCrop"
             android:src="@drawable/sunny"
             app:layout_constraintBottom_toTopOf="@id/temperature_id"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="@string/weather_condition_symbol" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/temperature_id"
@@ -126,14 +128,15 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:src="@drawable/humidity_img"
-                    android:contentDescription="@string/humidity" />
+                    android:contentDescription="@string/humidity"
+                    android:src="@drawable/humidity_img" />
 
                 <TextView
                     android:id="@+id/humidity_percent"
@@ -158,15 +161,15 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
+                android:layout_margin="10dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:src="@drawable/wind_img"
-                    android:contentDescription="@string/wind" />
+                    android:contentDescription="@string/wind"
+                    android:src="@drawable/wind_img" />
 
                 <TextView
                     android:id="@+id/wind_id"
@@ -191,17 +194,18 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:layout_width="70dp"
                     android:layout_height="70dp"
+                    android:contentDescription="@string/sunset"
                     android:scaleType="centerCrop"
                     android:scaleX="1"
                     android:scaleY="1"
-                    android:src="@drawable/sunset"
-                    android:contentDescription="@string/sunset" />
+                    android:src="@drawable/sunset" />
 
                 <TextView
                     android:id="@+id/sunset_id"
@@ -226,17 +230,18 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
                     android:layout_width="70dp"
                     android:layout_height="70dp"
+                    android:contentDescription="@string/sunrise"
                     android:scaleType="centerCrop"
                     android:scaleX="1"
                     android:scaleY="1"
-                    android:src="@drawable/sunrise_main"
-                    android:contentDescription="@string/sunrise" />
+                    android:src="@drawable/sunrise_main" />
 
                 <TextView
                     android:id="@+id/sunrise_id"
