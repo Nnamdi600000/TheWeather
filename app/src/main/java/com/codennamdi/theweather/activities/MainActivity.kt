@@ -38,6 +38,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         userPermissions()
+
     }
 
     private fun userPermissions() {
@@ -157,6 +160,7 @@ class MainActivity : AppCompatActivity() {
                 service.getWeather(latitude, longitude, Constants.METRIC_UNIT, Constants.APP_ID)
             customProgressDialog()
             listCall.enqueue(object : Callback<WeatherResponse> {
+                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onResponse(
                     call: Call<WeatherResponse>,
                     response: Response<WeatherResponse>
@@ -164,6 +168,9 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         stopCustomProgressDialog()
                         val weatherList: WeatherResponse? = response.body()
+                        if (weatherList != null) {
+                            setUpUI(weatherList)
+                        }
                         Log.i("Response result", "$weatherList")
                     } else {
                         stopCustomProgressDialog()
@@ -206,5 +213,58 @@ class MainActivity : AppCompatActivity() {
         customProgressDialog.dismiss()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun setUpUI(weatherList: WeatherResponse) {
+        for (i in weatherList.weather.indices) {
+            Log.i("current weather", weatherList.weather.toString())
+            binding.weatherMainDescriptionId.text = weatherList.weather[i].main
+            binding.fullDescriptionId.text = weatherList.weather[i].description
+            binding.temperatureId.text =
+                weatherList.main.temp.toString() + getUnit(application.resources.configuration.locales.toString())
+            binding.sunriseId.text = unixTime(weatherList.sys.sunrise)
+            binding.sunsetId.text = unixTime(weatherList.sys.sunset)
+            binding.location.text = weatherList.name + ","
+            binding.country.text = weatherList.sys.country
+            binding.humidityPercent.text = weatherList.main.humidity.toString() + "%"
+            binding.windId.text = weatherList.wind.speed.toString() + "km/h"
+            binding.feelsId.text = weatherList.main.feels_like.toString() + " Feels like"
 
+            when (weatherList.weather[i].icon) {
+                "01d" -> binding.ivWeatherCondition.setImageResource(R.drawable.sunny)
+                "01n" -> binding.ivWeatherCondition.setImageResource(R.drawable.clear_night)
+                "02d" -> binding.ivWeatherCondition.setImageResource(R.drawable.cloudy_img)
+                "02n" -> binding.ivWeatherCondition.setImageResource(R.drawable.cloudy_night)
+                "03d" -> binding.ivWeatherCondition.setImageResource(R.drawable.scattered_clouds)
+                "03n" -> binding.ivWeatherCondition.setImageResource(R.drawable.scattered_clouds)
+                "04d" -> binding.ivWeatherCondition.setImageResource(R.drawable.broken_clouds)
+                "04n" -> binding.ivWeatherCondition.setImageResource(R.drawable.broken_clouds)
+                "09d" -> binding.ivWeatherCondition.setImageResource(R.drawable.shower_rain)
+                "09n" -> binding.ivWeatherCondition.setImageResource(R.drawable.shower_rain)
+                "10d" -> binding.ivWeatherCondition.setImageResource(R.drawable.rain)
+                "10n" -> binding.ivWeatherCondition.setImageResource(R.drawable.rain)
+                "11d" -> binding.ivWeatherCondition.setImageResource(R.drawable.thunderstorm_img)
+                "11n" -> binding.ivWeatherCondition.setImageResource(R.drawable.thunderstorm_img)
+                "13d" -> binding.ivWeatherCondition.setImageResource(R.drawable.snow)
+                "13n" -> binding.ivWeatherCondition.setImageResource(R.drawable.snow)
+                "50d" -> binding.ivWeatherCondition.setImageResource(R.drawable.mist)
+                "50n" -> binding.ivWeatherCondition.setImageResource(R.drawable.mist)
+            }
+        }
+    }
+
+    private fun getUnit(value: String): String? {
+        var value = "\u2103"
+
+        if ("US" == value || "LR" == value || "MM" == value) {
+            value = "\u2109"
+        }
+        return value
+    }
+
+    private fun unixTime(timeX: Long): String? {
+        val date = Date(timeX * 1000L)
+        val sdf = SimpleDateFormat("HH:mm", Locale.UK)
+        sdf.timeZone = TimeZone.getDefault()
+        return sdf.format(date)
+    }
 }
