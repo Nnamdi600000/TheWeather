@@ -19,11 +19,11 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.codennamdi.theweather.Constants
 import com.codennamdi.theweather.R
 import com.codennamdi.theweather.databinding.ActivityMainBinding
 import com.codennamdi.theweather.models.WeatherResponse
 import com.codennamdi.theweather.network.WeatherService
+import com.codennamdi.theweather.utils.Constants
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -40,6 +40,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -247,15 +248,20 @@ class MainActivity : AppCompatActivity() {
                 Log.i("current weather", weatherList.weather.toString())
                 binding.weatherMainDescriptionId.text = weatherList.weather[i].main
                 binding.fullDescriptionId.text = weatherList.weather[i].description
+
+                val decimalFormatter = DecimalFormat("0")
                 binding.temperatureId.text =
-                    weatherList.main.temp.toString() + getUnit(application.resources.configuration.locales.toString())
+                    decimalFormatter.format(weatherList.main.temp - 273.15).toString() + getUnit(
+                        application.resources.configuration.locales.toString()
+                    )
                 binding.sunriseId.text = unixTime(weatherList.sys.sunrise)
                 binding.sunsetId.text = unixTime(weatherList.sys.sunset)
                 binding.location.text = weatherList.name + ","
                 binding.country.text = weatherList.sys.country
                 binding.humidityPercent.text = weatherList.main.humidity.toString() + "%"
                 binding.windId.text = weatherList.wind.speed.toString() + "km/h"
-                binding.feelsId.text = weatherList.main.feels_like.toString() + " Feels like"
+                binding.feelsId.text = decimalFormatter.format(weatherList.main.feels_like - 273.15)
+                    .toString() + " Feels like"
 
                 when (weatherList.weather[i].icon) {
                     "01d" -> binding.ivWeatherCondition.setImageResource(R.drawable.sunny)

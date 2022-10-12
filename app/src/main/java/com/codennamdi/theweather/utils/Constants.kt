@@ -1,4 +1,4 @@
-package com.codennamdi.theweather
+package com.codennamdi.theweather.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
