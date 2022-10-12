@@ -46,13 +46,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var customProgressDialog: Dialog
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         userPermissions()
+        binding.swipeToRefresh.setOnRefreshListener {
+            requestLocationData()
+            updated()
+        }
+    }
 
+    private fun updated() {
+        binding.swipeToRefresh.isRefreshing = false
     }
 
     private fun userPermissions() {
