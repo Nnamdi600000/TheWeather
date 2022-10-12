@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">TheWeather</string>
+    <string name="_20">20%</string>
+    <string name="humidity">Humidity</string>
+    <string name="wind">Wind</string>
+    <string name="sunset">Sunset</string>
+    <string name="_9_20">9:20</string>
+    <string name="sunrise">sunrise</string>
 </resources>
