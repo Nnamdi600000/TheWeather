@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -28,6 +29,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -45,8 +47,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var binding: ActivityMainBinding
     private lateinit var customProgressDialog: Dialog
+    private lateinit var sharedPreferences: SharedPreferences
 
-
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -55,12 +58,9 @@ class MainActivity : AppCompatActivity() {
         userPermissions()
         binding.swipeToRefresh.setOnRefreshListener {
             requestLocationData()
-            updated()
         }
-    }
-
-    private fun updated() {
-        binding.swipeToRefresh.isRefreshing = false
+        sharedPreferences = getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE)
+        setUpUI()
     }
 
     private fun userPermissions() {
@@ -155,6 +155,10 @@ class MainActivity : AppCompatActivity() {
             mLocationRequest, mLocationCallback,
             Looper.myLooper()
         )
+
+        if (binding.swipeToRefresh.isRefreshing){
+            binding.swipeToRefresh.isRefreshing = false
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -176,8 +180,18 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         stopCustomProgressDialog()
                         val weatherList: WeatherResponse? = response.body()
+
+                        //Setting up sharedPreferences
+                        val weatherResponseJsonToString = Gson().toJson(weatherList)
+                        val editor = sharedPreferences.edit()
+                        editor.putString(
+                            Constants.WEATHER_RESPONSE_DATA,
+                            weatherResponseJsonToString
+                        )
+                        editor.apply()
+
                         if (weatherList != null) {
-                            setUpUI(weatherList)
+                            setUpUI()
                         }
                         Log.i("Response result", "$weatherList")
                     } else {
@@ -222,42 +236,50 @@ class MainActivity : AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun setUpUI(weatherList: WeatherResponse) {
-        for (i in weatherList.weather.indices) {
-            Log.i("current weather", weatherList.weather.toString())
-            binding.weatherMainDescriptionId.text = weatherList.weather[i].main
-            binding.fullDescriptionId.text = weatherList.weather[i].description
-            binding.temperatureId.text =
-                weatherList.main.temp.toString() + getUnit(application.resources.configuration.locales.toString())
-            binding.sunriseId.text = unixTime(weatherList.sys.sunrise)
-            binding.sunsetId.text = unixTime(weatherList.sys.sunset)
-            binding.location.text = weatherList.name + ","
-            binding.country.text = weatherList.sys.country
-            binding.humidityPercent.text = weatherList.main.humidity.toString() + "%"
-            binding.windId.text = weatherList.wind.speed.toString() + "km/h"
-            binding.feelsId.text = weatherList.main.feels_like.toString() + " Feels like"
+    private fun setUpUI() {
+        val weatherResponseJsonString =
+            sharedPreferences.getString(Constants.WEATHER_RESPONSE_DATA, "")
+        if (!weatherResponseJsonString.isNullOrEmpty()) {
+            val weatherList =
+                Gson().fromJson(weatherResponseJsonString, WeatherResponse::class.java)
+            for (i in weatherList.weather.indices) {
+                Log.i("current weather", weatherList.weather.toString())
+                binding.weatherMainDescriptionId.text = weatherList.weather[i].main
+                binding.fullDescriptionId.text = weatherList.weather[i].description
+                binding.temperatureId.text =
+                    weatherList.main.temp.toString() + getUnit(application.resources.configuration.locales.toString())
+                binding.sunriseId.text = unixTime(weatherList.sys.sunrise)
+                binding.sunsetId.text = unixTime(weatherList.sys.sunset)
+                binding.location.text = weatherList.name + ","
+                binding.country.text = weatherList.sys.country
+                binding.humidityPercent.text = weatherList.main.humidity.toString() + "%"
+                binding.windId.text = weatherList.wind.speed.toString() + "km/h"
+                binding.feelsId.text = weatherList.main.feels_like.toString() + " Feels like"
 
-            when (weatherList.weather[i].icon) {
-                "01d" -> binding.ivWeatherCondition.setImageResource(R.drawable.sunny)
-                "01n" -> binding.ivWeatherCondition.setImageResource(R.drawable.clear_night)
-                "02d" -> binding.ivWeatherCondition.setImageResource(R.drawable.cloudy_img)
-                "02n" -> binding.ivWeatherCondition.setImageResource(R.drawable.cloudy_night)
-                "03d" -> binding.ivWeatherCondition.setImageResource(R.drawable.scattered_clouds)
-                "03n" -> binding.ivWeatherCondition.setImageResource(R.drawable.scattered_clouds)
-                "04d" -> binding.ivWeatherCondition.setImageResource(R.drawable.broken_clouds)
-                "04n" -> binding.ivWeatherCondition.setImageResource(R.drawable.broken_clouds)
-                "09d" -> binding.ivWeatherCondition.setImageResource(R.drawable.shower_rain)
-                "09n" -> binding.ivWeatherCondition.setImageResource(R.drawable.shower_rain)
-                "10d" -> binding.ivWeatherCondition.setImageResource(R.drawable.rain)
-                "10n" -> binding.ivWeatherCondition.setImageResource(R.drawable.rain)
-                "11d" -> binding.ivWeatherCondition.setImageResource(R.drawable.thunderstorm_img)
-                "11n" -> binding.ivWeatherCondition.setImageResource(R.drawable.thunderstorm_img)
-                "13d" -> binding.ivWeatherCondition.setImageResource(R.drawable.snow)
-                "13n" -> binding.ivWeatherCondition.setImageResource(R.drawable.snow)
-                "50d" -> binding.ivWeatherCondition.setImageResource(R.drawable.mist)
-                "50n" -> binding.ivWeatherCondition.setImageResource(R.drawable.mist)
+                when (weatherList.weather[i].icon) {
+                    "01d" -> binding.ivWeatherCondition.setImageResource(R.drawable.sunny)
+                    "01n" -> binding.ivWeatherCondition.setImageResource(R.drawable.clear_night)
+                    "02d" -> binding.ivWeatherCondition.setImageResource(R.drawable.cloudy_img)
+                    "02n" -> binding.ivWeatherCondition.setImageResource(R.drawable.cloudy_night)
+                    "03d" -> binding.ivWeatherCondition.setImageResource(R.drawable.scattered_clouds)
+                    "03n" -> binding.ivWeatherCondition.setImageResource(R.drawable.scattered_clouds)
+                    "04d" -> binding.ivWeatherCondition.setImageResource(R.drawable.broken_clouds)
+                    "04n" -> binding.ivWeatherCondition.setImageResource(R.drawable.broken_clouds)
+                    "09d" -> binding.ivWeatherCondition.setImageResource(R.drawable.shower_rain)
+                    "09n" -> binding.ivWeatherCondition.setImageResource(R.drawable.shower_rain)
+                    "10d" -> binding.ivWeatherCondition.setImageResource(R.drawable.rain)
+                    "10n" -> binding.ivWeatherCondition.setImageResource(R.drawable.rain)
+                    "11d" -> binding.ivWeatherCondition.setImageResource(R.drawable.thunderstorm_img)
+                    "11n" -> binding.ivWeatherCondition.setImageResource(R.drawable.thunderstorm_img)
+                    "13d" -> binding.ivWeatherCondition.setImageResource(R.drawable.snow)
+                    "13n" -> binding.ivWeatherCondition.setImageResource(R.drawable.snow)
+                    "50d" -> binding.ivWeatherCondition.setImageResource(R.drawable.mist)
+                    "50n" -> binding.ivWeatherCondition.setImageResource(R.drawable.mist)
+                }
             }
         }
+
+
     }
 
     private fun getUnit(value: String): String? {
