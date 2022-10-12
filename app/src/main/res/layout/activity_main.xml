@@ -27,7 +27,8 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="4dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/location_img" />
+                android:src="@drawable/location_img"
+                android:contentDescription="@string/location" />
 
             <TextView
                 android:id="@+id/location"
@@ -38,7 +39,7 @@
                 android:textColor="@color/white"
                 android:textSize="15sp"
                 android:textStyle="italic"
-                tools:text="Enugu" />
+                tools:text="USA" />
 
             <TextView
                 android:id="@+id/country"
@@ -56,20 +57,21 @@
             android:id="@+id/iv_weather_condition"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginBottom="80dp"
+            android:layout_marginBottom="50dp"
             android:scaleType="centerCrop"
+            android:src="@drawable/sunny"
             app:layout_constraintBottom_toTopOf="@id/temperature_id"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/weather_condition_symbol" />
 
         <TextView
             android:id="@+id/temperature_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed-medium"
-            android:padding="2dp"
             android:textColor="@color/white"
-            android:textSize="85sp"
+            android:textSize="70sp"
             app:layout_constraintBottom_toTopOf="@id/weather_main_description_id"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -128,10 +130,10 @@
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:padding="10dp"
-                    android:src="@drawable/humidity_img" />
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/humidity_img"
+                    android:contentDescription="@string/humidity" />
 
                 <TextView
                     android:id="@+id/humidity_percent"
@@ -161,10 +163,10 @@
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:padding="10dp"
-                    android:src="@drawable/wind_img" />
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:src="@drawable/wind_img"
+                    android:contentDescription="@string/wind" />
 
                 <TextView
                     android:id="@+id/wind_id"
@@ -193,13 +195,13 @@
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:padding="10dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:scaleType="centerCrop"
                     android:scaleX="1"
                     android:scaleY="1"
-                    android:src="@drawable/sunset" />
+                    android:src="@drawable/sunset"
+                    android:contentDescription="@string/sunset" />
 
                 <TextView
                     android:id="@+id/sunset_id"
@@ -228,13 +230,13 @@
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:padding="10dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:scaleType="centerCrop"
                     android:scaleX="1"
                     android:scaleY="1"
-                    android:src="@drawable/sunrise_main" />
+                    android:src="@drawable/sunrise_main"
+                    android:contentDescription="@string/sunrise" />
 
                 <TextView
                     android:id="@+id/sunrise_id"

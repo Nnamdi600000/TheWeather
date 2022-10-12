@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity() {
             Looper.myLooper()
         )
 
-        if (binding.swipeToRefresh.isRefreshing){
+        if (binding.swipeToRefresh.isRefreshing) {
             binding.swipeToRefresh.isRefreshing = false
         }
     }
@@ -239,6 +239,7 @@ class MainActivity : AppCompatActivity() {
     private fun setUpUI() {
         val weatherResponseJsonString =
             sharedPreferences.getString(Constants.WEATHER_RESPONSE_DATA, "")
+        //We are checking if weatherResponseJsonString is empty
         if (!weatherResponseJsonString.isNullOrEmpty()) {
             val weatherList =
                 Gson().fromJson(weatherResponseJsonString, WeatherResponse::class.java)
@@ -278,8 +279,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
 
     private fun getUnit(value: String): String? {

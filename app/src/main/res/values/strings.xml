@@ -6,4 +6,6 @@
     <string name="sunset">Sunset</string>
     <string name="_9_20">9:20</string>
     <string name="sunrise">sunrise</string>
+    <string name="location">Location</string>
+    <string name="weather_condition_symbol">weather condition symbol</string>
 </resources>
